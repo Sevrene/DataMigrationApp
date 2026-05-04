@@ -1,3 +1,3 @@
-health number, health number province, name
-001, 100, John Doe
-002, 200, Jane Doe
+Health ID,Health ID Province,Name,Address,Email,Phone Number,Sex
+001, 100, John Doe, 123 Example St., John@test.com, 123-321-1234, M
+002, 200, Jane Doe, 321 Example St., Jane@test.com, 321-123-4321, F

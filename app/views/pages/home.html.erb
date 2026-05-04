@@ -1,26 +1,69 @@
 <div class="page-container">
-<h1>Ava Industries | Data Migration App - CSV Processor</h1>
+  <h1>Ava Industries | Data Migration App - CSV Processor</h1>
+  <hr>
 
-<hr>
+  <section class="form-container">
+    <%= form_with url: "/upload",
+              multipart: true,
+              data: { turbo: false },
+              class: "upload-form" do %>
+      <div class="upload-wrapper">
+        <input type="file" name="file" accept=".csv" required>
+        <p>Click to browse</p>
+      </div>
+      
+      <div class="file-info">
+        No file selected
+      </div>
+      
+      <button type="submit">Process CSV</button>
+    <% end %>
+  </section>
 
-<div class="form-container">
-  <form action="/upload" method="post" enctype="multipart/form-data">  
-    <div class="upload-wrapper">
-      <input type="file" name="file" accept=".csv" required>
-      <p>Click to browse</p>
-    </div>
-    
-    <div class="file-info">
-      No file selected
-    </div>
-    
-    <button type="submit">Process CSV</button>
-  </form>
-</div>
+  <a href="/debug/Health For You Clinic Patient Demographics - patient_demographics.csv" class="example-download">
+    Download example CSV
+  </a>
 
-<a href="/debug/Health For You Clinic Patient Demographics - patient_demographics.csv" class="example-download">
-  Download example CSV
-</a>
+  <section class="migration-stats">
+    <% if @migration_stats.present? %>
+      <hr>
+      
+      <h2>Migration Stats Results</h2>
+
+      <ul class="stats-list">
+        <li>
+          <span class="label">Total rows processed</span>
+          <span class="value"><%= @migration_stats["total_records"] %></span>
+        </li>
+        <li>
+          <span class="label">Successfully inserted</span>
+          <span class="value success"><%= @migration_stats["successful_records"] %></span>
+        </li>
+        <li>
+          <span class="label">Failed inserts</span>
+          <span class="value error"><%= @migration_stats["failed_records"] %></span>
+        </li>
+        <li>
+          <span class="label">Duration</span>
+          <span class="value"><%= @migration_stats["duration_seconds"] %>s</span>
+        </li>
+      </ul>
+
+      <% if @migration_stats["errors"].present? %>
+        <div class="errors">
+          <h3>Errors</h3>
+          <ul class="error-list">
+            <% @migration_stats["errors"].each do |e| %>
+              <li>
+                <span class="error-row">Row <%= e["row"] %></span>
+                <span class="error-message"><%= e["errors"].join(", ") %></span>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    <% end %>
+  </section>
 </div>
 
 
@@ -30,7 +73,7 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
   }
 
   .page-container hr {
@@ -69,6 +112,11 @@
     background: rgba(0, 119, 255, 0.1);
   }
 
+  .upload-wrapper.has-file {
+    border-color: green;
+    background: lightgreen;
+  }
+
   .upload-wrapper input {
     position: absolute;
     inset: 0;
@@ -83,7 +131,14 @@
   .file-info {
     text-align: center;
     color: gray;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
+
+  .file-info.has-file {
+    color: darkgreen;
+  } 
 
   .form-container form button {
     padding: 1rem;
@@ -113,4 +168,86 @@
   .example-download:hover {
     background: skyblue;
   }
+
+  .migration-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    width: 100%;
+  }
+
+  .stats-list {
+    width: 30%;
+    max-width: 400px;
+  }
+
+  .stats-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    border-bottom: 1px solid white;
+  }
+
+  .label {
+    color: gray;
+  }
+
+  .value.success {
+    color: #2e7d32;
+  }
+
+  .value.error {
+    color: #c62828;
+  }
+
+  /* TODO: Properly style the errors section after better error handling */
+  .errors {
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid lightcoral;
+    background: white;
+  }
+
+  .errors h3 {
+    margin: 0 0 8px 0;
+    color: red;
+  }
+
+  .error-list li {
+    padding: 6px 0;
+    border-bottom: 1px solid lightcoral;
+  }
+
+  .error-list li:last-child {
+    border-bottom: none;
+  }
+
+  .error-row {
+    margin-right: 8px;
+    color: red;
+  }
+
+  .error-message {
+    color: gray;
+  }
 </style>
+
+<script>
+  const fileInput = document.querySelector('.upload-wrapper input');
+  const uploadWrapper = document.querySelector('.upload-wrapper');
+  const fileInfo = document.querySelector('.file-info');
+
+  fileInput.addEventListener('change', (e) => {
+    const fileName = e.target.files[0]?.name || "No file selected";
+    fileInfo.textContent = fileName;
+
+    if (e.target.files.length > 0) {
+      uploadWrapper.classList.add('has-file');
+      fileInfo.classList.add('has-file');
+    } else {
+      uploadWrapper.classList.remove('has-file');
+      fileInfo.classList.remove('has-file');
+    }
+  });
+</script>
