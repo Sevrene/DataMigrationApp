@@ -8,3 +8,25 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+/* Base Styling - Borrowed from personal portfolio project theme */
+:root {
+  --color-text: #ffffff;
+  --color-bg: #08090c;
+  --color-bg-deep: #12141a;
+  --color-bg-accent: #2a3058;
+}
+
+body {
+  margin: 0;
+  font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+  color: var(--color-text);
+  background:
+    radial-gradient(
+      circle at 80% -10%,
+      var(--color-bg-accent),
+      transparent 40%
+    ),
+    linear-gradient(160deg, var(--color-bg), var(--color-bg-deep));
+  min-height: 100vh;
+}

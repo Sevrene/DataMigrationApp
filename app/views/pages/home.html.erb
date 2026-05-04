@@ -1,1 +1,116 @@
-<h1>CSV Upload Page Here</h1>
+<div class="page-container">
+<h1>Ava Industries | Data Migration App - CSV Processor</h1>
+
+<hr>
+
+<div class="form-container">
+  <form action="/upload" method="post" enctype="multipart/form-data">  
+    <div class="upload-wrapper">
+      <input type="file" name="file" accept=".csv" required>
+      <p>Click to browse</p>
+    </div>
+    
+    <div class="file-info">
+      No file selected
+    </div>
+    
+    <button type="submit">Process CSV</button>
+  </form>
+</div>
+
+<a href="/debug/Health For You Clinic Patient Demographics - patient_demographics.csv" class="example-download">
+  Download example CSV
+</a>
+</div>
+
+
+<style>
+  .page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  .page-container hr {
+    width: 80%;
+    margin: 20px 0;
+  }
+
+  .form-container {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .form-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2rem;
+    border-radius: 12px;
+    background: white;
+    width: 30%;
+    max-width: 400px;
+  }
+
+  .upload-wrapper {
+    position: relative;
+    border: 2px dashed blue;
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .upload-wrapper:hover {
+    background: rgba(0, 119, 255, 0.1);
+  }
+
+  .upload-wrapper input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .upload-wrapper p {
+    color: gray;
+  }
+
+  .file-info {
+    text-align: center;
+    color: gray;
+  }
+
+  .form-container form button {
+    padding: 1rem;
+    border-radius: 8px;
+    color: black;
+    background: lightblue;
+    cursor: pointer;
+    border: none;
+  }
+
+  .form-container form button:hover {
+    background: skyblue;
+  }
+
+  .example-download {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 12px;
+    color: black;
+    background: lightblue;
+    border: 1px solid white;
+    border-radius: 12px;
+    text-decoration: none;
+  }
+
+  .example-download:hover {
+    background: skyblue;
+  }
+</style>
