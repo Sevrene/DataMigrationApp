@@ -23,6 +23,7 @@ class PagesController < ApplicationController
     begin
       # Assumption: The CSV file has known headers for direct mapping
       CSV.foreach(file.path, headers: true).with_index(2) do |row, row_number|
+        migration_stats[:total_records] += 1
         # Patient already exists in database
         # Assumption: An already exisitng patient will not need to be updated with possible new information from the CSV
         # Full implemenation would likely want to handle partial updates to existing records (Possibly toggleable)
@@ -55,8 +56,6 @@ class PagesController < ApplicationController
         if newPatient.save
           migration_stats[:successful_records] += 1
         end
-
-        migration_stats[:total_records] += 1
       end
     rescue CSV::MalformedCSVError => e
       # Handle errors related to CSV parsing
