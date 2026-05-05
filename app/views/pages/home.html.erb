@@ -11,23 +11,31 @@
         <input type="file" name="file" accept=".csv" required>
         <p>Click to browse</p>
       </div>
-      
+
       <div class="file-info">
         No file selected
       </div>
-      
+
       <button type="submit">Process CSV</button>
     <% end %>
   </section>
 
-  <a href="/debug/Health For You Clinic Patient Demographics - patient_demographics.csv" class="example-download">
-    Download example CSV
-  </a>
+  <section class="example-downloads">
+    <a href="/debug/Health For You Clinic Patient Demographics - patient_demographics.csv">
+      Download Example CSV
+    </a>
+    <a href="/debug/PARTIAL-Health For You Clinic Patient Demographics - patient_demographics.csv">
+      Download Partial Example CSV
+    </a>
+    <a href="/debug/MALFORMED-Health For You Clinic Patient Demographics - patient_demographics.csv">
+      Download Malformed Example CSV
+    </a>
+  </section>
 
   <section class="migration-stats">
     <% if @migration_stats.present? %>
       <hr>
-      
+
       <h2>Migration Stats Results</h2>
 
       <ul class="stats-list">
@@ -38,6 +46,10 @@
         <li>
           <span class="label">Successfully inserted</span>
           <span class="value success"><%= @migration_stats["successful_records"] %></span>
+        </li>
+        <li>
+          <span class="label">Duplicate entries (skipped)</span>
+          <span class="value"><%= @migration_stats["duplicate_records"] %></span>
         </li>
         <li>
           <span class="label">Failed inserts</span>
@@ -55,7 +67,9 @@
           <ul class="error-list">
             <% @migration_stats["errors"].each do |e| %>
               <li>
-                <span class="error-row">Row <%= e["row"] %></span>
+                <% if e["row"].present? %>
+                  <span class="error-row">Row <%= e["row"] %></span>
+                <% end %>
                 <span class="error-message"><%= e["errors"].join(", ") %></span>
               </li>
             <% end %>
@@ -73,7 +87,6 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    height: 100vh;
   }
 
   .page-container hr {
@@ -152,20 +165,29 @@
   .form-container form button:hover {
     background: skyblue;
   }
-
-  .example-download {
+  
+  .example-downloads {
     position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
     bottom: 20px;
     right: 20px;
+  }
+  
+  .example-downloads a {
     padding: 12px 12px;
     color: black;
     background: lightblue;
     border: 1px solid white;
     border-radius: 12px;
     text-decoration: none;
+    font-size: 14px;
+    
   }
 
-  .example-download:hover {
+  .example-downloads a:hover {
     background: skyblue;
   }
 
@@ -178,6 +200,7 @@
   }
 
   .stats-list {
+    padding: 0;
     width: 30%;
     max-width: 400px;
   }
@@ -200,22 +223,27 @@
   .value.error {
     color: #c62828;
   }
-
-  /* TODO: Properly style the errors section after better error handling */
+  
   .errors {
     margin-top: 12px;
-    padding: 12px;
+    padding: 0px 24px;
     border: 1px solid lightcoral;
     background: white;
   }
 
   .errors h3 {
-    margin: 0 0 8px 0;
     color: red;
   }
 
+  .error-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+
   .error-list li {
-    padding: 6px 0;
+    padding: 3px 0;
     border-bottom: 1px solid lightcoral;
   }
 
@@ -233,6 +261,7 @@
   }
 </style>
 
+<!-- Instead of a script, ideally this would be handled by a controller. Possible future improvement pivot -->
 <script>
   const fileInput = document.querySelector('.upload-wrapper input');
   const uploadWrapper = document.querySelector('.upload-wrapper');
